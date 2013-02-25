@@ -1,4 +1,6 @@
+require 'facter'
 require 'tempfile'
+require 'phantomjs-mac' if RUBY_PLATFORM.downcase.include?('darwin')
 
 class Jasmine::Runners::Phantom
   attr_accessor :suites
@@ -55,7 +57,7 @@ class Jasmine::Runners::Phantom
 
   def processor_count
     @processor_count ||= begin
-      ENV['JASMINE_PARALLEL_COUNT'] || [(`sysctl -n hw.ncpu` || 4).to_i, 4].min # 8 processes seems to use too much memory (500mb each!)
+      ENV['JASMINE_PARALLEL_COUNT'] || [Facter.sp_number_processors.to_i, 4].min
     end.to_i
   end
 end

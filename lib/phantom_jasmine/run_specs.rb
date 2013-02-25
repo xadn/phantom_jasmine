@@ -8,7 +8,6 @@ else
   require 'spec'
 end
 require 'jasmine/runners/phantom'
-require 'phantomjs-mac' if RUBY_PLATFORM.downcase.include?('darwin')
 
 jasmine_yml = File.join(Dir.pwd, 'spec', 'javascripts', 'support', 'jasmine.yml')
 if File.exist?(jasmine_yml)
