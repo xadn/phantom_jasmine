@@ -17,7 +17,7 @@ Jasmine.load_configuration_from_yaml
 
 config = Jasmine.config
 
-server = Jasmine::Server.new(config.port, Jasmine::Application.app(config))
+server = Jasmine::Server.new(Jasmine.find_unused_port, Jasmine::Application.app(config))
 t = Thread.new do
   begin
     server.start
