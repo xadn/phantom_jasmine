@@ -30,6 +30,6 @@ Jasmine::wait_for_listener(port, "jasmine server")
 puts "jasmine server started."
 
 results_processor = Jasmine::ResultsProcessor.new(config)
-results = Jasmine::Runners::Phantom.new(config.port, results_processor, config.result_batch_size).run
+results = Jasmine::Runners::Phantom.new(port, results_processor, config.result_batch_size).run
 formatter = Jasmine::RspecFormatter.new
 formatter.format_results(results)
