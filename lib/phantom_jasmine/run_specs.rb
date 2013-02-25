@@ -16,8 +16,8 @@ end
 Jasmine.load_configuration_from_yaml
 
 config = Jasmine.config
-
-server = Jasmine::Server.new(Jasmine.find_unused_port, Jasmine::Application.app(config))
+port = Jasmine.find_unused_port
+server = Jasmine::Server.new(port, Jasmine::Application.app(config))
 t = Thread.new do
   begin
     server.start
@@ -26,7 +26,7 @@ t = Thread.new do
   # # ignore bad exits
 end
 t.abort_on_exception = true
-Jasmine::wait_for_listener(config.port, "jasmine server")
+Jasmine::wait_for_listener(port, "jasmine server")
 puts "jasmine server started."
 
 results_processor = Jasmine::ResultsProcessor.new(config)
