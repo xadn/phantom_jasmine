@@ -9,7 +9,7 @@ end
 inst = Gem::DependencyInstaller.new
 begin
   if RUBY_PLATFORM.downcase.include? 'darwin'
-    inst.install 'phatomjs-mac', '>= 0.0.3'
+    inst.install 'phantomjs-mac', '>= 0.0.3'
   end
 rescue
   #Exit with a non-zero value to let rubygems know something went wrong
