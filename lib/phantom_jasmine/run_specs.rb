@@ -21,7 +21,7 @@ server = Jasmine::Server.new(port, Jasmine::Application.app(config))
 t = Thread.new do
   begin
     server.start
-  rescue ChildProcess::TimeoutError
+  rescue
   end
   # # ignore bad exits
 end

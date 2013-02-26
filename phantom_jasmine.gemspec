@@ -22,4 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency %q{jasmine}, '>= 1.2'
   gem.add_dependency %q{facter}, '>= 1.6.17'
   gem.add_dependency %q{phantomjs-mac}, '>= 0.0.3'
+
+  gem.add_development_dependency %q{rspec}, '>= 2.13.0'
+  gem.add_development_dependency %q{fuubar}
 end

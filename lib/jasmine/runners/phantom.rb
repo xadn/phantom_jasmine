@@ -1,4 +1,5 @@
 require 'facter'
+require 'jasmine'
 require 'tempfile'
 require 'phantomjs-mac' if RUBY_PLATFORM.downcase.include?('darwin')
 
@@ -39,7 +40,6 @@ class Jasmine::Runners::Phantom
 
   def results_hash
     spec_results = {}
-
     @top_level_suites.group_by { |suite| suite['id'] % processor_count }.map { |(k, suites)| run_suites(suites) }.each do |pid, tmpfile|
       Process.wait pid
 
@@ -57,7 +57,7 @@ class Jasmine::Runners::Phantom
 
   def processor_count
     @processor_count ||= begin
-      ENV['JASMINE_PARALLEL_COUNT'] || [Facter.sp_number_processors.to_i, 4].min
+      ENV['JASMINE_PARALLEL_COUNT'] || Facter.processorcount
     end.to_i
   end
 end
