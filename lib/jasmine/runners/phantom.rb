@@ -1,7 +1,7 @@
 require 'facter'
 require 'jasmine'
 require 'tempfile'
-require 'phantomjs-mac' if RUBY_PLATFORM.downcase.include?('darwin')
+require 'phantomjs.rb'
 
 class Jasmine::Runners::Phantom
   attr_accessor :suites
@@ -10,6 +10,7 @@ class Jasmine::Runners::Phantom
     @port = port
     @results_processor = results_processor
     @result_batch_size = result_batch_size
+    @phantom = Phantomjs.send(:get_executable)
   end
 
   def run
@@ -21,7 +22,7 @@ class Jasmine::Runners::Phantom
 
   def load_suite_info
     tmpfile = Tempfile.new('count')
-    pid = Process.spawn "#{Phantomjs.executable_path} '#{File.join(File.dirname(__FILE__), 'phantom_jasmine_count.js')}' #{@port}", :out => tmpfile.path
+    pid = Process.spawn "#{@phantom} '#{File.join(File.dirname(__FILE__), 'phantom_jasmine_count.js')}' #{@port}", :out => tmpfile.path
     Process.wait pid
     json = JSON.parse(tmpfile.read, :max_nesting => 100).tap { tmpfile.close }
     @suites = json['suites']
@@ -31,7 +32,7 @@ class Jasmine::Runners::Phantom
   def run_suites(suites)
     tmpfile = Tempfile.new('run')
     commands = suites.map do |suite|
-      "#{Phantomjs.executable_path} '#{File.join(File.dirname(__FILE__), 'phantom_jasmine_run.js')}' #{@port} '#{suite['description']}'"
+      "#{@phantom} '#{File.join(File.dirname(__FILE__), 'phantom_jasmine_run.js')}' #{@port} '#{suite['description']}'"
     end.join(';echo ,;')
 
     pid = Process.spawn "echo [;#{commands};echo ]", :out => tmpfile.path
