@@ -19,16 +19,10 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency %q{jasmine}, '>= 1.2'
   gem.add_dependency %q{facter}, '>= 1.6.17'
-  gem.add_dependency %q{phantomjs.rb}, '>= 0.0.5'
+  gem.add_dependency %q{phantomjs}, '>= 1.8.1.0'
 
   gem.add_development_dependency %q{json}
   gem.add_development_dependency %q{rspec}, '>= 2.13.0'
   gem.add_development_dependency %q{fuubar}
   gem.add_development_dependency %q{rake}
-
-  if RUBY_PLATFORM =~ /linux/
-    gem.add_runtime_dependency 'phantomjs-linux'
-  elsif RUBY_PLATFORM =~ /darwin/
-    gem.add_runtime_dependency 'phantomjs-mac'
-  end
 end

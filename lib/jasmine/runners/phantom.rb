@@ -1,7 +1,7 @@
 require 'facter'
 require 'jasmine'
 require 'tempfile'
-require 'phantomjs.rb'
+require 'phantomjs'
 
 class Jasmine::Runners::Phantom
   attr_accessor :suites
@@ -10,7 +10,7 @@ class Jasmine::Runners::Phantom
     @port = port
     @results_processor = results_processor
     @result_batch_size = result_batch_size
-    @phantom = Phantomjs.send(:get_executable)
+    @phantom = Phantomjs.path
   end
 
   def run
