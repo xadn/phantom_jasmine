@@ -1,6 +1,8 @@
 # PhantomJasmine
 
-TODO: Write a gem description
+Jasmine phantom runs jasmine phantom tests in parallel using phantomjs.
+
+It adds a rake task jasmine:phantom to your environment.
 
 ## Installation
 
@@ -18,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Run 'rake jasmine:phantom'
 
 ## Contributing
 

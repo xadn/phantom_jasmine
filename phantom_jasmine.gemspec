@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_dependency %q{jasmine}, '>= 1.2'
+  gem.add_dependency %q{jasmine}, '>= 1.3.1'
   gem.add_dependency %q{facter}, '>= 1.6.17'
   gem.add_dependency %q{phantomjs}, '>= 1.8.1.0'
 
