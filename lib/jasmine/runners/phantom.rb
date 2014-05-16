@@ -4,7 +4,6 @@ require 'tempfile'
 require 'phantomjs'
 
 class Jasmine::Runners::Phantom
-  attr_accessor :suites
 
   def initialize(port, results_processor, result_batch_size)
     @port = port
@@ -14,34 +13,44 @@ class Jasmine::Runners::Phantom
   end
 
   def run
-    load_suite_info
     @results_processor.process(results_hash, suites)
+  end
+
+  def suites
+    selected_groups.flatten
   end
 
   private
 
-  def load_suite_info
-    tmpfile = Tempfile.new('count')
-    pid = Process.spawn "#{@phantom} '#{File.join(File.dirname(__FILE__), 'phantom_jasmine_count.js')}' #{@port}", :out => tmpfile.path
-    Process.wait pid
-    json = JSON.parse(tmpfile.read, :max_nesting => 100).tap { tmpfile.close }
-    @suites = json['suites']
-    @top_level_suites = json['top_level_suites']
+  def available_suites
+    @available_suites ||= begin
+      tmpfile = Tempfile.new('count')
+      pid = Process.spawn "#{@phantom} '#{File.join(File.dirname(__FILE__), 'phantom_jasmine_count.js')}' #{@port}", :out => tmpfile.path
+      Process.wait pid
+      json = JSON.parse(tmpfile.read, :max_nesting => 100).tap { tmpfile.close }
+      json['suites']
+    end
   end
 
   def run_suites(suites)
     tmpfile = Tempfile.new('run')
     commands = suites.map do |suite|
-      "#{@phantom} '#{File.join(File.dirname(__FILE__), 'phantom_jasmine_run.js')}' #{@port} '#{suite['description']}'"
+      "#{@phantom} '#{File.join(File.dirname(__FILE__), 'phantom_jasmine_run.js')}' #{@port} '#{suite['name']}'"
     end.join(';echo ,;')
 
     pid = Process.spawn "echo [;#{commands};echo ]", :out => tmpfile.path
     [pid, tmpfile]
   end
 
+  def selected_groups
+    group_size = (available_suites.size.to_f / parallel_count.to_f).ceil
+    groups = available_suites.each_slice(group_size).to_a
+    selected_group_indexes.map { |index| Array(groups[index - 1]) }
+  end
+
   def results_hash
     spec_results = {}
-    @top_level_suites.group_by { |suite| suite['id'] % processor_count }.map { |(k, suites)| run_suites(suites) }.each do |pid, tmpfile|
+    selected_groups.map { |suites| run_suites(suites) }.each do |pid, tmpfile|
       Process.wait pid
 
       JSON.parse(tmpfile.read).each do |result|
@@ -56,9 +65,13 @@ class Jasmine::Runners::Phantom
     spec_results
   end
 
-  def processor_count
-    @processor_count ||= begin
+  def parallel_count
+    @parallel_count ||= begin
       ENV['JASMINE_PARALLEL_COUNT'] || Facter[:processorcount].value
     end.to_i
+  end
+
+  def selected_group_indexes
+    ENV['JASMINE_SELECT_GROUPS'] ? ENV['JASMINE_SELECT_GROUPS'].split(',').map(&:to_i) : (1..parallel_count)
   end
 end
