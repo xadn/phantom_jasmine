@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Jasmine::Runners::Phantom do
   let!(:port) { 8888 }
   let!(:results_processor) do
-    mock('results_processor').tap do |processor|
+    double('results_processor').tap do |processor|
       processor.stub :process
     end
   end
