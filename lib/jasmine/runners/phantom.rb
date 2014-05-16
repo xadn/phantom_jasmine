@@ -58,7 +58,7 @@ class Jasmine::Runners::Phantom
 
   def processor_count
     @processor_count ||= begin
-      ENV['JASMINE_PARALLEL_COUNT'] || Facter.processorcount
+      ENV['JASMINE_PARALLEL_COUNT'] || Facter[:processorcount].value
     end.to_i
   end
 end
