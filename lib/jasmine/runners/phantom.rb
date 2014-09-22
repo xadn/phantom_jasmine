@@ -25,6 +25,8 @@ class Jasmine::Runners::Phantom
   def results_hash
     spec_results = {}
     puts "Running #{parallel_suite_groups.flatten.size} suites across #{parallel_suite_groups.size} threads"
+    puts "Suites:"
+    puts parallel_suite_groups.flatten.map { |suite| suite['name'] }
     parallel_suite_groups.map { |suites| run_suites(suites) }.each do |pid, tmpfile|
       Process.wait pid
       puts "pid: #{pid} has finished"
